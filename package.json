@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "export:responses": "node scripts/export-responses.js"
+    "export:responses": "node scripts/export-responses.js",
+    "clear:responses": "node scripts/clear-responses.js"
   },
   "dependencies": {
     "@azure/data-tables": "^13.3.0"

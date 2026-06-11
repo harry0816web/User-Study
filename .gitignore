@@ -2,3 +2,4 @@ node_modules
 api/node_modules
 .vercel
 .env.local
+exports

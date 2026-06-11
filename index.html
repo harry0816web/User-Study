@@ -593,7 +593,7 @@
               <a id="video-launcher-link" href="#" target="_blank" rel="noopener noreferrer">前往 YouTube 觀看影片</a>
             </div>
             <div class="video-notes">
-              <div class="note">
+              <div class="note" id="watch-instruction-note">
                 <strong>觀看提醒：</strong>
                 <span id="watch-instruction">這是 360° 影片，請用滑鼠拖曳畫面，或在手機/平板上轉動裝置觀看不同方向。</span>
               </div>
@@ -601,8 +601,6 @@
                 <strong>可重複播放：</strong>
                 若需要再次確認節奏或情緒變化，可以重新播放後再作答。
               </div>
-              <div class="note warning" id="video-kind-note"></div>
-              <div class="note" id="video-link-note"></div>
             </div>
           </article>
 
@@ -810,8 +808,7 @@
           kind: "study",
           format: "360",
           youtubeUrl: "https://www.youtube.com/watch?v=0Ql4Z0N9FxY",
-          youtubeId: "0Ql4Z0N9FxY",
-          note: "請替換成你的 YouTube 不公開 360 影片。"
+          youtubeId: "0Ql4Z0N9FxY"
         },
         B: {
           id: "B",
@@ -820,8 +817,7 @@
           kind: "study",
           format: "2D",
           youtubeUrl: "https://www.youtube.com/watch?v=OR8QXagr9pA",
-          youtubeId: "OR8QXagr9pA",
-          note: "目前標記為 2D 對照影片。"
+          youtubeId: "OR8QXagr9pA"
         },
         C: {
           id: "C",
@@ -830,8 +826,7 @@
           kind: "study",
           format: "360",
           youtubeUrl: "https://www.youtube.com/watch?v=0Ql4Z0N9FxY",
-          youtubeId: "0Ql4Z0N9FxY",
-          note: "請替換成你的 YouTube 不公開 360 影片。"
+          youtubeId: "0Ql4Z0N9FxY"
         },
         D: {
           id: "D",
@@ -840,8 +835,7 @@
           kind: "study",
           format: "2D",
           youtubeUrl: "https://www.youtube.com/watch?v=VS4hxLp-Nmk",
-          youtubeId: "VS4hxLp-Nmk",
-          note: "目前標記為 2D 對照影片。"
+          youtubeId: "VS4hxLp-Nmk"
         },
         E: {
           id: "E",
@@ -850,8 +844,7 @@
           kind: "study",
           format: "360",
           youtubeUrl: "https://www.youtube.com/watch?v=0Ql4Z0N9FxY",
-          youtubeId: "0Ql4Z0N9FxY",
-          note: "請替換成你的 YouTube 不公開 360 影片。"
+          youtubeId: "0Ql4Z0N9FxY"
         },
         F: {
           id: "F",
@@ -860,8 +853,7 @@
           kind: "study",
           format: "2D",
           youtubeUrl: "https://www.youtube.com/watch?v=YeAMZ0fA5a0",
-          youtubeId: "YeAMZ0fA5a0",
-          note: "目前標記為 2D 對照影片。"
+          youtubeId: "YeAMZ0fA5a0"
         }
       };
 
@@ -913,8 +905,7 @@
       const videoLauncherTextEl = document.getElementById("video-launcher-text");
       const videoLauncherLinkEl = document.getElementById("video-launcher-link");
       const watchInstructionEl = document.getElementById("watch-instruction");
-      const videoKindNoteEl = document.getElementById("video-kind-note");
-      const videoLinkNoteEl = document.getElementById("video-link-note");
+      const watchInstructionNoteEl = document.getElementById("watch-instruction-note");
       const videoCommentEl = document.getElementById("video-comment");
       const summaryEl = document.getElementById("summary");
       const submissionStatusEl = document.getElementById("submission-status");
@@ -1026,9 +1017,8 @@
 
         stepPillEl.textContent = `Step ${stepNumber} / ${totalSteps}`;
         stepTitleEl.textContent = `${displayLabel} 體驗評估`;
-        videoKindNoteEl.textContent = `${video.format} 影片。${video.note}`;
-        videoLinkNoteEl.innerHTML = `<strong>目前網站版使用的 YouTube 連結：</strong> <a href="${video.youtubeUrl}" target="_blank" rel="noopener noreferrer">${video.youtubeUrl}</a>`;
         if (is360Video) {
+          watchInstructionNoteEl.classList.remove("hidden");
           watchInstructionEl.textContent = "這是 360° 影片，請點下方按鈕前往 YouTube 原站觀看，並用滑鼠拖曳畫面或在手機/平板上轉動裝置探索不同方向。";
           videoFrameEl.classList.add("hidden");
           videoFrameEl.src = "";
@@ -1036,7 +1026,8 @@
           videoLauncherTextEl.textContent = "目前網站版不直接在頁面內播放 360 影片，請開新分頁到 YouTube 觀看，確認完整體驗後再回來填答。";
           videoLauncherLinkEl.href = video.youtubeUrl;
         } else {
-          watchInstructionEl.textContent = "這是 2D 影片，請直接在頁面內觀看；如有需要可重播後再作答。";
+          watchInstructionNoteEl.classList.remove("hidden");
+          watchInstructionEl.textContent = "本次實驗的觀看時長設定為 1 分鐘，觀看至 1 分鐘即可；如有需要可重播後再作答。";
           videoLauncherEl.classList.add("hidden");
           videoFrameEl.classList.remove("hidden");
           videoFrameEl.src = getEmbedUrl(video.youtubeId);

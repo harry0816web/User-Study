@@ -30,7 +30,7 @@ function ensureEnv() {
 
   const connectionString = process.env.AZURE_TABLES_CONNECTION_STRING;
   const tableName = process.env.AZURE_TABLE_NAME || "surveyresponses";
-  const partitionKey = process.env.AZURE_TABLE_PARTITION_KEY || "study-v1";
+  const partitionKey = process.env.AZURE_TABLE_PARTITION_KEY || "";
 
   if (!connectionString) {
     throw new Error(
@@ -82,10 +82,12 @@ function csvEscape(value) {
 async function main() {
   const { connectionString, tableName, partitionKey } = ensureEnv();
   const tableClient = TableClient.fromConnectionString(connectionString, tableName);
-  const filter = `PartitionKey eq '${partitionKey}'`;
   const entities = [];
+  const queryOptions = partitionKey
+    ? { filter: `PartitionKey eq '${partitionKey}'` }
+    : undefined;
 
-  for await (const entity of tableClient.listEntities({ queryOptions: { filter } })) {
+  for await (const entity of tableClient.listEntities({ queryOptions })) {
     entities.push(entity);
   }
 
@@ -126,6 +128,14 @@ async function main() {
   fs.writeFileSync(csvPath, csvLines.join("\n"));
 
   console.log(`Exported ${entities.length} responses`);
+  if (entities.length > 0) {
+    const partitions = [...new Set(entities.map((entity) => entity.partitionKey || entity.PartitionKey || ""))];
+    console.log(`Detected partition keys: ${partitions.join(", ")}`);
+  } else {
+    console.log("No rows found in the selected table/query.");
+    console.log(`Table: ${tableName}`);
+    console.log(`Partition filter: ${partitionKey || "(none)"}`);
+  }
   console.log(`Raw JSON: ${rawJsonPath}`);
   console.log(`Flat JSON: ${flatJsonPath}`);
   console.log(`CSV: ${csvPath}`);
