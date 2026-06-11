@@ -521,11 +521,6 @@
       <section class="hero">
         <div class="eyebrow">M3 Lab Study Prototype</div>
         <h1>沉浸式音樂視覺化 360 影片體驗評估</h1>
-        <p>
-          這份頁面是根據你提供的問卷草稿與
-          <a href="/Users/harryp/Desktop/Projects/UserStudy/Poster.pdf">Poster.pdf</a>
-          所建立的單頁 prototype，主軸聚焦在音樂驅動的 360° 影片體驗，並評估受試者對於節奏契合度與情緒契合度的主觀感受。
-        </p>
         <div class="meta-grid">
           <div class="meta-card">
             <strong>研究主題</strong>
@@ -533,11 +528,7 @@
           </div>
           <div class="meta-card">
             <strong>評估構面</strong>
-            節奏契合、情緒契合、主觀信心、評分難易度與專注程度
-          </div>
-          <div class="meta-card">
-            <strong>目前流程</strong>
-            同意書 → 正式影片亂序 → 後測 → 匯出結果
+            節奏契合、情緒契合、主觀信心、評分難易度
           </div>
         </div>
       </section>
@@ -559,20 +550,14 @@
             <input id="consent" type="checkbox" />
             <label for="consent">
               <span>我已了解上述說明，並同意參與本次研究。</span>
-              本頁面目前採本機儲存草稿，提交時會產生可下載的 JSON 結果，後續可再接資料庫或 Google Sheet。
             </label>
           </div>
         </article>
 
         <aside class="panel">
           <h2>實驗設定</h2>
-          <p class="helper-text">
-            這裡先做成 proposal / prototype 版本。正式使用前，你只需要把 YouTube
-            影片 ID 換掉，就能開始內部試跑。
-          </p>
           <div class="actions">
             <button id="start-btn" class="primary" type="button">開始試驗</button>
-            <button id="restore-btn" class="secondary" type="button">載入上次草稿</button>
           </div>
           <div id="runtime-warning" class="runtime-warning hidden"></div>
           <p id="setup-status" class="status hidden"></p>
@@ -807,6 +792,7 @@
         <p class="helper-text">
           這裡會顯示本次填答結果的 JSON。正式收案前可以先用它檢查欄位是否完整，或把下載功能改成送到後端。
         </p>
+        <p id="submission-status" class="helper-text"></p>
         <div class="actions">
           <button id="download-btn" class="primary" type="button">下載 JSON</button>
           <button id="restart-btn" class="ghost" type="button">重新開始新受試者</button>
@@ -931,6 +917,7 @@
       const videoLinkNoteEl = document.getElementById("video-link-note");
       const videoCommentEl = document.getElementById("video-comment");
       const summaryEl = document.getElementById("summary");
+      const submissionStatusEl = document.getElementById("submission-status");
       const resultPreviewEl = document.getElementById("result-preview");
       const immersiveGroupEls = [
         document.getElementById("immersive-group"),
@@ -1241,6 +1228,13 @@
         resultPreviewEl.textContent = JSON.stringify(surveyState, null, 2);
         if (surveyState.submission) {
           showStatus(surveyState.submission.message, !surveyState.submission.ok);
+          if (surveyState.submission.ok && surveyState.submission.payload) {
+            submissionStatusEl.textContent = `Azure 寫入成功。table=${surveyState.submission.payload.tableName}, rowKey=${surveyState.submission.payload.rowKey}`;
+          } else {
+            submissionStatusEl.textContent = surveyState.submission.message;
+          }
+        } else {
+          submissionStatusEl.textContent = "";
         }
         summaryEl.scrollIntoView({ behavior: "smooth", block: "start" });
       }

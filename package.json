@@ -2,6 +2,9 @@
   "name": "user-study",
   "version": "1.0.0",
   "private": true,
+  "scripts": {
+    "export:responses": "node scripts/export-responses.js"
+  },
   "dependencies": {
     "@azure/data-tables": "^13.3.0"
   }
