@@ -15,24 +15,25 @@ async function ensureTable(connectionString, tableName) {
   }
 }
 
-module.exports = async function (context, req) {
+module.exports = async function handler(req, res) {
+  if (req.method !== "POST") {
+    res.setHeader("Allow", "POST");
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
   try {
-    const connectionString = process.env.AZURE_TABLES_CONNECTION_STRING || process.env.AzureWebJobsStorage;
+    const connectionString = process.env.AZURE_TABLES_CONNECTION_STRING;
     if (!connectionString) {
-      context.res = {
-        status: 500,
-        body: { error: "Missing AZURE_TABLES_CONNECTION_STRING or AzureWebJobsStorage." }
-      };
-      return;
+      return res.status(500).json({
+        error: "Missing AZURE_TABLES_CONNECTION_STRING."
+      });
     }
 
-    const body = req.body || {};
+    const body = typeof req.body === "string" ? JSON.parse(req.body) : (req.body || {});
     if (!body.responses || !body.posttest || !Array.isArray(body.videoOrder)) {
-      context.res = {
-        status: 400,
-        body: { error: "Invalid payload. Expecting videoOrder, responses, and posttest." }
-      };
-      return;
+      return res.status(400).json({
+        error: "Invalid payload. Expecting videoOrder, responses, and posttest."
+      });
     }
 
     await ensureTable(connectionString, TABLE_NAME);
@@ -56,29 +57,17 @@ module.exports = async function (context, req) {
 
     await tableClient.createEntity(entity);
 
-    context.res = {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: {
-        ok: true,
-        tableName: TABLE_NAME,
-        partitionKey: PARTITION_KEY,
-        rowKey: entity.rowKey,
-        submittedAt
-      }
-    };
+    return res.status(200).json({
+      ok: true,
+      tableName: TABLE_NAME,
+      partitionKey: PARTITION_KEY,
+      rowKey: entity.rowKey,
+      submittedAt
+    });
   } catch (error) {
-    context.log.error("submitSurvey failed", error);
-    context.res = {
-      status: 500,
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: {
-        error: error.message || "Unknown server error"
-      }
-    };
+    console.error("submitSurvey failed", error);
+    return res.status(500).json({
+      error: error.message || "Unknown server error"
+    });
   }
 };
