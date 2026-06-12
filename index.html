@@ -105,7 +105,8 @@
       h1 {
         font-size: clamp(2rem, 4vw, 3.7rem);
         margin-top: 18px;
-        max-width: 12ch;
+        max-width: none;
+        white-space: nowrap;
       }
 
       .hero p {
@@ -194,7 +195,6 @@
       }
 
       input[type="text"],
-      textarea,
       select {
         width: 100%;
         border: 1px solid rgba(110, 81, 52, 0.2);
@@ -203,11 +203,6 @@
         padding: 14px 14px;
         font: inherit;
         color: var(--ink);
-      }
-
-      textarea {
-        min-height: 100px;
-        resize: vertical;
       }
 
       .actions {
@@ -450,16 +445,6 @@
         display: none;
       }
 
-      .summary pre {
-        margin: 18px 0 0;
-        padding: 16px;
-        border-radius: 16px;
-        background: #201a17;
-        color: #f8efe3;
-        overflow: auto;
-        font-size: 0.9rem;
-      }
-
       .status {
         margin-top: 16px;
         color: var(--ok);
@@ -512,6 +497,10 @@
 
         .scale {
           grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        h1 {
+          white-space: normal;
         }
       }
     </style>
@@ -681,13 +670,6 @@
               </div>
             </div>
 
-            <div class="question-group">
-              <label>
-                <span>9. 開放式回饋（選填）</span>
-                <textarea id="video-comment" placeholder="可以描述你注意到的畫面、節奏感、情緒連結，或任何困惑之處。"></textarea>
-              </label>
-            </div>
-
             <div class="actions">
               <button id="save-video-btn" class="primary" type="submit">儲存並前往下一步</button>
             </div>
@@ -772,30 +754,26 @@
             </div>
           </div>
 
-          <div class="question-group">
-            <label>
-              <span>9. 想說的話（必填）</span>
-              <textarea id="final-comment" required placeholder="請留下整體觀影與作答感受，包含好評、困難點或建議。"></textarea>
-            </label>
-          </div>
-
           <div class="actions">
-            <button id="submit-btn" class="primary" type="submit">完成並產生結果</button>
+            <button id="submit-btn" class="primary" type="submit">完成問卷</button>
           </div>
         </form>
       </section>
 
       <section id="summary" class="summary">
-        <h2>結果摘要</h2>
+        <h2>填答完成</h2>
         <p class="helper-text">
-          這裡會顯示本次填答結果的 JSON。正式收案前可以先用它檢查欄位是否完整，或把下載功能改成送到後端。
+          感謝您完成本次觀看與填答。
+        </p>
+        <p class="helper-text">
+          想觀看更多 Demo，可前往
+          <a href="https://youtube.com/playlist?list=PLc8n5CV3lKceev3_pk5kWkNmpVCAD8FQL&si=ajfv4u3O_629kU-e" target="_blank" rel="noopener noreferrer">YouTube 播放清單</a>
+          查看。
         </p>
         <p id="submission-status" class="helper-text"></p>
         <div class="actions">
-          <button id="download-btn" class="primary" type="button">下載 JSON</button>
           <button id="restart-btn" class="ghost" type="button">重新開始新受試者</button>
         </div>
-        <pre id="result-preview"></pre>
       </section>
     </main>
 
@@ -824,36 +802,9 @@
           label: "影片 C",
           title: "正式影片 C",
           kind: "study",
-          format: "360",
-          youtubeUrl: "https://www.youtube.com/watch?v=0Ql4Z0N9FxY",
-          youtubeId: "0Ql4Z0N9FxY"
-        },
-        D: {
-          id: "D",
-          label: "影片 D",
-          title: "正式影片 D",
-          kind: "study",
           format: "2D",
-          youtubeUrl: "https://www.youtube.com/watch?v=VS4hxLp-Nmk",
-          youtubeId: "VS4hxLp-Nmk"
-        },
-        E: {
-          id: "E",
-          label: "影片 E",
-          title: "正式影片 E",
-          kind: "study",
-          format: "360",
-          youtubeUrl: "https://www.youtube.com/watch?v=0Ql4Z0N9FxY",
-          youtubeId: "0Ql4Z0N9FxY"
-        },
-        F: {
-          id: "F",
-          label: "影片 F",
-          title: "正式影片 F",
-          kind: "study",
-          format: "2D",
-          youtubeUrl: "https://www.youtube.com/watch?v=YeAMZ0fA5a0",
-          youtubeId: "YeAMZ0fA5a0"
+          youtubeUrl: "https://youtu.be/7HfIv8Vqb9U?si=EtAnS-NsNfRdAjXc",
+          youtubeId: "7HfIv8Vqb9U"
         }
       };
 
@@ -906,10 +857,8 @@
       const videoLauncherLinkEl = document.getElementById("video-launcher-link");
       const watchInstructionEl = document.getElementById("watch-instruction");
       const watchInstructionNoteEl = document.getElementById("watch-instruction-note");
-      const videoCommentEl = document.getElementById("video-comment");
       const summaryEl = document.getElementById("summary");
       const submissionStatusEl = document.getElementById("submission-status");
-      const resultPreviewEl = document.getElementById("result-preview");
       const immersiveGroupEls = [
         document.getElementById("immersive-group"),
         document.getElementById("immersive-group-2")
@@ -942,6 +891,13 @@
           [copy[i], copy[j]] = [copy[j], copy[i]];
         }
         return copy;
+      }
+
+      function buildVideoOrder() {
+        const videoKeys = Object.keys(videoCatalog);
+        const twoDVideos = videoKeys.filter((key) => videoCatalog[key].format === "2D");
+        const immersiveVideos = videoKeys.filter((key) => videoCatalog[key].format === "360");
+        return [...shuffle(twoDVideos), ...shuffle(immersiveVideos)];
       }
 
       function getEmbedUrl(youtubeId) {
@@ -1045,7 +1001,6 @@
         buildScale(document.querySelector('[data-question="musicSupport"]'), "musicSupport", existing.musicSupport);
         buildScale(document.querySelector('[data-question="spatialExplore"]'), "spatialExplore", existing.spatialExplore);
         buildScale(document.querySelector('[data-question="spatialImmersion"]'), "spatialImmersion", existing.spatialImmersion);
-        videoCommentEl.value = existing.comment || "";
       }
 
       function hydratePosttest() {
@@ -1062,7 +1017,6 @@
         document.querySelectorAll('input[name="emotionDistribution"]').forEach((el) => {
           el.checked = el.value === post.emotionDistribution;
         });
-        document.getElementById("final-comment").value = post.finalComment || "";
       }
 
       function collectScaleValue(name, scope = document) {
@@ -1085,8 +1039,7 @@
         const hasScales = requiredScale.every((name) => collectScaleValue(name, posttestFormEl) !== null);
         const rhythmDistribution = posttestFormEl.querySelector('input[name="rhythmDistribution"]:checked');
         const emotionDistribution = posttestFormEl.querySelector('input[name="emotionDistribution"]:checked');
-        const finalComment = document.getElementById("final-comment").value.trim();
-        return hasScales && rhythmDistribution && emotionDistribution && finalComment;
+        return hasScales && rhythmDistribution && emotionDistribution;
       }
 
       function startSurvey() {
@@ -1099,7 +1052,7 @@
         surveyState.createdAt = surveyState.createdAt || new Date().toISOString();
         surveyState.startedAt = new Date().toISOString();
         surveyState.completedAt = "";
-        surveyState.videoOrder = shuffle(["A", "B", "C", "D", "E", "F"]);
+        surveyState.videoOrder = buildVideoOrder();
         surveyState.currentStepIndex = 0;
         surveyState.responses = {};
         surveyState.posttest = {};
@@ -1108,7 +1061,7 @@
         surveyShellEl.style.display = "block";
         summaryEl.style.display = "none";
         renderCurrentStep();
-        showStatus("問卷流程已建立，影片順序已打亂並寫入草稿。", false);
+        showStatus("問卷流程已建立，影片順序已依格式分組並寫入草稿。", false);
         surveyShellEl.scrollIntoView({ behavior: "smooth", block: "start" });
       }
 
@@ -1131,8 +1084,7 @@
           engagement: collectScaleValue("engagement", videoStepEl),
           musicSupport: collectScaleValue("musicSupport", videoStepEl),
           spatialExplore: collectScaleValue("spatialExplore", videoStepEl),
-          spatialImmersion: collectScaleValue("spatialImmersion", videoStepEl),
-          comment: videoCommentEl.value.trim()
+          spatialImmersion: collectScaleValue("spatialImmersion", videoStepEl)
         };
 
         surveyState.currentStepIndex += 1;
@@ -1204,8 +1156,7 @@
           focus: collectScaleValue("focus", posttestFormEl),
           compareEmotion: collectScaleValue("compareEmotion", posttestFormEl),
           compareEngagement: collectScaleValue("compareEngagement", posttestFormEl),
-          compareFormatBenefit: collectScaleValue("compareFormatBenefit", posttestFormEl),
-          finalComment: document.getElementById("final-comment").value.trim()
+          compareFormatBenefit: collectScaleValue("compareFormatBenefit", posttestFormEl)
         };
         surveyState.completedAt = new Date().toISOString();
         surveyState.submission = await submitSurveyData();
@@ -1216,7 +1167,6 @@
       function renderSummary() {
         surveyShellEl.style.display = "none";
         summaryEl.style.display = "block";
-        resultPreviewEl.textContent = JSON.stringify(surveyState, null, 2);
         if (surveyState.submission) {
           showStatus(surveyState.submission.message, !surveyState.submission.ok);
           if (surveyState.submission.ok && surveyState.submission.payload) {
@@ -1228,16 +1178,6 @@
           submissionStatusEl.textContent = "";
         }
         summaryEl.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-
-      function downloadResults() {
-        const blob = new Blob([JSON.stringify(surveyState, null, 2)], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const anchor = document.createElement("a");
-        anchor.href = url;
-        anchor.download = `survey-result-${Date.now()}.json`;
-        anchor.click();
-        URL.revokeObjectURL(url);
       }
 
       function restartSurvey() {
@@ -1262,7 +1202,6 @@
       document.getElementById("start-btn").addEventListener("click", startSurvey);
       document.getElementById("video-form").addEventListener("submit", handleVideoSubmit);
       posttestFormEl.addEventListener("submit", handlePosttestSubmit);
-      document.getElementById("download-btn").addEventListener("click", downloadResults);
       document.getElementById("restart-btn").addEventListener("click", restartSurvey);
 
       initializeScales();
