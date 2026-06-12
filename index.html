@@ -770,7 +770,6 @@
           <a href="https://youtube.com/playlist?list=PLc8n5CV3lKceev3_pk5kWkNmpVCAD8FQL&si=ajfv4u3O_629kU-e" target="_blank" rel="noopener noreferrer">YouTube 播放清單</a>
           查看。
         </p>
-        <p id="submission-status" class="helper-text"></p>
         <div class="actions">
           <button id="restart-btn" class="ghost" type="button">重新開始新受試者</button>
         </div>
@@ -858,7 +857,6 @@
       const watchInstructionEl = document.getElementById("watch-instruction");
       const watchInstructionNoteEl = document.getElementById("watch-instruction-note");
       const summaryEl = document.getElementById("summary");
-      const submissionStatusEl = document.getElementById("submission-status");
       const immersiveGroupEls = [
         document.getElementById("immersive-group"),
         document.getElementById("immersive-group-2")
@@ -1167,16 +1165,6 @@
       function renderSummary() {
         surveyShellEl.style.display = "none";
         summaryEl.style.display = "block";
-        if (surveyState.submission) {
-          showStatus(surveyState.submission.message, !surveyState.submission.ok);
-          if (surveyState.submission.ok && surveyState.submission.payload) {
-            submissionStatusEl.textContent = `Azure 寫入成功。table=${surveyState.submission.payload.tableName}, rowKey=${surveyState.submission.payload.rowKey}`;
-          } else {
-            submissionStatusEl.textContent = surveyState.submission.message;
-          }
-        } else {
-          submissionStatusEl.textContent = "";
-        }
         summaryEl.scrollIntoView({ behavior: "smooth", block: "start" });
       }
 
