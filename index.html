@@ -833,13 +833,22 @@
       const summaryEl = document.getElementById("summary");
 
       function buildScale(container, name, selectedValue) {
+        const labels = {
+          1: "極不同意",
+          2: "很不同意",
+          3: "較不同意",
+          4: "普通",
+          5: "較同意",
+          6: "很同意",
+          7: "極同意"
+        };
         container.innerHTML = "";
         for (let value = 1; value <= 7; value += 1) {
           const label = document.createElement("label");
           label.innerHTML = `
             <input type="radio" name="${name}" value="${value}" ${String(selectedValue) === String(value) ? "checked" : ""} />
             <span>${value}</span>
-            <small>${value === 4 ? "普通" : value < 4 ? "較不同意" : "較同意"}</small>
+            <small>${labels[value]}</small>
           `;
           container.appendChild(label);
         }
