@@ -294,6 +294,7 @@
         display: grid;
         grid-template-columns: 1.2fr 0.8fr;
         gap: 24px;
+        align-items: start;
       }
 
       .video-card,
@@ -302,6 +303,18 @@
         border: 1px solid var(--line);
         background: rgba(255, 255, 255, 0.72);
         padding: 18px;
+      }
+
+      .video-card {
+        position: sticky;
+        top: 24px;
+      }
+
+      .survey-layout > .question-card {
+        max-height: calc(100vh - 120px);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        scrollbar-gutter: stable;
       }
 
       .video-frame {
@@ -480,6 +493,15 @@
         .survey-layout {
           grid-template-columns: 1fr;
         }
+
+        .video-card {
+          position: static;
+        }
+
+        .survey-layout > .question-card {
+          max-height: none;
+          overflow-y: visible;
+        }
       }
 
       @media (max-width: 640px) {
@@ -651,25 +673,6 @@
               </div>
             </div>
 
-            <div id="immersive-group" class="question-group hidden">
-              <h3>360 度空間體驗題 (360-Only)</h3>
-              <div class="prompt">7. 我會主動轉動視角來探索這段影片中的不同方向。</div>
-              <div class="scale" data-question="spatialExplore"></div>
-              <div class="anchor">
-                <span>1 = 非常不同意</span>
-                <span>7 = 非常同意</span>
-              </div>
-            </div>
-
-            <div id="immersive-group-2" class="question-group hidden">
-              <div class="prompt">8. 360 度呈現提升了我對這段音樂視覺化的空間體驗。</div>
-              <div class="scale" data-question="spatialImmersion"></div>
-              <div class="anchor">
-                <span>1 = 非常不同意</span>
-                <span>7 = 非常同意</span>
-              </div>
-            </div>
-
             <div class="actions">
               <button id="save-video-btn" class="primary" type="submit">儲存並前往下一步</button>
             </div>
@@ -679,11 +682,11 @@
         <form id="posttest-form" class="question-card hidden">
           <div class="question-group">
             <h3>第三部分：後測</h3>
-            <p class="helper-text">以下問題用來補充了解受試者在評分時的信心、難易度感受與專注程度。</p>
+            <p class="helper-text">以下問題用來補充了解您對評分結果的信心，以及對 360 度影片空間體驗的感受。</p>
           </div>
 
           <div class="question-group">
-            <div class="prompt">1. 您對於自己剛才評分結果的信心程度如何？</div>
+            <div class="prompt">1. 我對自己剛才的評分結果有信心。</div>
             <div class="scale" data-question="confidence"></div>
             <div class="anchor">
               <span>1 = 非常沒信心</span>
@@ -692,44 +695,8 @@
           </div>
 
           <div class="question-group">
-            <div class="prompt">2. 您覺得「評分節奏/情緒契合度」這件事的難易度如何？</div>
-            <div class="scale" data-question="difficulty"></div>
-            <div class="anchor">
-              <span>1 = 非常容易</span>
-              <span>7 = 非常困難</span>
-            </div>
-          </div>
-
-          <div class="question-group">
-            <div class="prompt">3. 您認為這批影片的節奏契合度分布如何？</div>
-            <div class="choice-stack">
-              <label><input type="radio" name="rhythmDistribution" value="extreme" /> <span>偏兩端</span><small>大多數影片都非常好或非常差，中間值較少。</small></label>
-              <label><input type="radio" name="rhythmDistribution" value="balanced" /> <span>平均分布</span><small>好、中、差節奏契合度的影片數量大致平均。</small></label>
-              <label><input type="radio" name="rhythmDistribution" value="clustered" /> <span>集中在中間</span><small>多數影片表現相近，較少極端好或極端差。</small></label>
-            </div>
-          </div>
-
-          <div class="question-group">
-            <div class="prompt">4. 您認為這批影片的情緒契合度分布如何？</div>
-            <div class="choice-stack">
-              <label><input type="radio" name="emotionDistribution" value="extreme" /> <span>偏兩端</span><small>大多數影片都非常好或非常差，中間值較少。</small></label>
-              <label><input type="radio" name="emotionDistribution" value="balanced" /> <span>平均分布</span><small>好、中、差情緒契合度的影片數量大致平均。</small></label>
-              <label><input type="radio" name="emotionDistribution" value="clustered" /> <span>集中在中間</span><small>多數影片表現相近，較少極端好或極端差。</small></label>
-            </div>
-          </div>
-
-          <div class="question-group">
-            <div class="prompt">5. 您在評分過程中的專注程度如何？</div>
-            <div class="scale" data-question="focus"></div>
-            <div class="anchor">
-              <span>1 = 非常不專注</span>
-              <span>7 = 非常專注</span>
-            </div>
-          </div>
-
-          <div class="question-group">
-            <div class="prompt">6. 整體來說，360 度影片比 2D 影片更能傳達音樂情緒。</div>
-            <div class="scale" data-question="compareEmotion"></div>
+            <div class="prompt">2. 我認為自己能分辨不同影片在節奏契合度上的差異。</div>
+            <div class="scale" data-question="rhythmDiscrimination"></div>
             <div class="anchor">
               <span>1 = 非常不同意</span>
               <span>7 = 非常同意</span>
@@ -737,8 +704,8 @@
           </div>
 
           <div class="question-group">
-            <div class="prompt">7. 整體來說，360 度影片比 2D 影片更能吸引我觀看。</div>
-            <div class="scale" data-question="compareEngagement"></div>
+            <div class="prompt">3. 我認為自己能分辨不同影片在情緒契合度上的差異。</div>
+            <div class="scale" data-question="emotionDiscrimination"></div>
             <div class="anchor">
               <span>1 = 非常不同意</span>
               <span>7 = 非常同意</span>
@@ -746,8 +713,17 @@
           </div>
 
           <div class="question-group">
-            <div class="prompt">8. 相較於 2D 影片，360 度呈現方式增強了我這次的音樂視覺化體驗。</div>
-            <div class="scale" data-question="compareFormatBenefit"></div>
+            <div class="prompt">4. 整體來說，360度影片帶給我更強的空間臨場感。</div>
+            <div class="scale" data-question="spatialPresence360"></div>
+            <div class="anchor">
+              <span>1 = 非常不同意</span>
+              <span>7 = 非常同意</span>
+            </div>
+          </div>
+
+          <div class="question-group">
+            <div class="prompt">5. 在觀看360度影片時，我會想主動探索不同方向的畫面。</div>
+            <div class="scale" data-question="spatialExplore360"></div>
             <div class="anchor">
               <span>1 = 非常不同意</span>
               <span>7 = 非常同意</span>
@@ -814,14 +790,11 @@
         "emotionTransition",
         "engagement",
         "musicSupport",
-        "spatialExplore",
-        "spatialImmersion",
         "confidence",
-        "difficulty",
-        "focus",
-        "compareEmotion",
-        "compareEngagement",
-        "compareFormatBenefit"
+        "rhythmDiscrimination",
+        "emotionDiscrimination",
+        "spatialPresence360",
+        "spatialExplore360"
       ];
 
       const surveyState = {
@@ -857,10 +830,6 @@
       const watchInstructionEl = document.getElementById("watch-instruction");
       const watchInstructionNoteEl = document.getElementById("watch-instruction-note");
       const summaryEl = document.getElementById("summary");
-      const immersiveGroupEls = [
-        document.getElementById("immersive-group"),
-        document.getElementById("immersive-group-2")
-      ];
 
       function buildScale(container, name, selectedValue) {
         container.innerHTML = "";
@@ -949,6 +918,13 @@
         return stepKeys[surveyState.currentStepIndex];
       }
 
+      function resetQuestionScroll() {
+        const activeQuestionCard = getCurrentStepKey() === "posttest" ? posttestFormEl : document.getElementById("video-form");
+        if (activeQuestionCard) {
+          activeQuestionCard.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      }
+
       function renderCurrentStep() {
         const key = getCurrentStepKey();
         const isPosttest = key === "posttest";
@@ -988,7 +964,6 @@
         }
         videoStepEl.classList.remove("hidden");
         posttestFormEl.classList.add("hidden");
-        immersiveGroupEls.forEach((el) => el.classList.toggle("hidden", !is360Video));
 
         const existing = surveyState.responses[key] || {};
         buildScale(document.querySelector('[data-question="rhythmCut"]'), "rhythmCut", existing.rhythmCut);
@@ -997,24 +972,17 @@
         buildScale(document.querySelector('[data-question="emotionTransition"]'), "emotionTransition", existing.emotionTransition);
         buildScale(document.querySelector('[data-question="engagement"]'), "engagement", existing.engagement);
         buildScale(document.querySelector('[data-question="musicSupport"]'), "musicSupport", existing.musicSupport);
-        buildScale(document.querySelector('[data-question="spatialExplore"]'), "spatialExplore", existing.spatialExplore);
-        buildScale(document.querySelector('[data-question="spatialImmersion"]'), "spatialImmersion", existing.spatialImmersion);
+        resetQuestionScroll();
       }
 
       function hydratePosttest() {
         const post = surveyState.posttest || {};
         buildScale(document.querySelector('[data-question="confidence"]'), "confidence", post.confidence);
-        buildScale(document.querySelector('[data-question="difficulty"]'), "difficulty", post.difficulty);
-        buildScale(document.querySelector('[data-question="focus"]'), "focus", post.focus);
-        buildScale(document.querySelector('[data-question="compareEmotion"]'), "compareEmotion", post.compareEmotion);
-        buildScale(document.querySelector('[data-question="compareEngagement"]'), "compareEngagement", post.compareEngagement);
-        buildScale(document.querySelector('[data-question="compareFormatBenefit"]'), "compareFormatBenefit", post.compareFormatBenefit);
-        document.querySelectorAll('input[name="rhythmDistribution"]').forEach((el) => {
-          el.checked = el.value === post.rhythmDistribution;
-        });
-        document.querySelectorAll('input[name="emotionDistribution"]').forEach((el) => {
-          el.checked = el.value === post.emotionDistribution;
-        });
+        buildScale(document.querySelector('[data-question="rhythmDiscrimination"]'), "rhythmDiscrimination", post.rhythmDiscrimination);
+        buildScale(document.querySelector('[data-question="emotionDiscrimination"]'), "emotionDiscrimination", post.emotionDiscrimination);
+        buildScale(document.querySelector('[data-question="spatialPresence360"]'), "spatialPresence360", post.spatialPresence360);
+        buildScale(document.querySelector('[data-question="spatialExplore360"]'), "spatialExplore360", post.spatialExplore360);
+        resetQuestionScroll();
       }
 
       function collectScaleValue(name, scope = document) {
@@ -1023,21 +991,13 @@
       }
 
       function validateVideoForm() {
-        const key = getCurrentStepKey();
-        const video = videoCatalog[key];
         const required = ["rhythmCut", "rhythmMotion", "emotionTone", "emotionTransition", "engagement", "musicSupport"];
-        if (video && video.format === "360") {
-          required.push("spatialExplore", "spatialImmersion");
-        }
         return required.every((name) => collectScaleValue(name, videoStepEl) !== null);
       }
 
       function validatePosttestForm() {
-        const requiredScale = ["confidence", "difficulty", "focus", "compareEmotion", "compareEngagement", "compareFormatBenefit"];
-        const hasScales = requiredScale.every((name) => collectScaleValue(name, posttestFormEl) !== null);
-        const rhythmDistribution = posttestFormEl.querySelector('input[name="rhythmDistribution"]:checked');
-        const emotionDistribution = posttestFormEl.querySelector('input[name="emotionDistribution"]:checked');
-        return hasScales && rhythmDistribution && emotionDistribution;
+        const requiredScale = ["confidence", "rhythmDiscrimination", "emotionDiscrimination", "spatialPresence360", "spatialExplore360"];
+        return requiredScale.every((name) => collectScaleValue(name, posttestFormEl) !== null);
       }
 
       function startSurvey() {
@@ -1066,7 +1026,7 @@
       function handleVideoSubmit(event) {
         event.preventDefault();
         if (!validateVideoForm()) {
-          alert("請先完成這段影片的四個量表評分。");
+          alert("請先完成這段影片的所有量表評分。");
           return;
         }
 
@@ -1080,9 +1040,7 @@
           emotionTone: collectScaleValue("emotionTone", videoStepEl),
           emotionTransition: collectScaleValue("emotionTransition", videoStepEl),
           engagement: collectScaleValue("engagement", videoStepEl),
-          musicSupport: collectScaleValue("musicSupport", videoStepEl),
-          spatialExplore: collectScaleValue("spatialExplore", videoStepEl),
-          spatialImmersion: collectScaleValue("spatialImmersion", videoStepEl)
+          musicSupport: collectScaleValue("musicSupport", videoStepEl)
         };
 
         surveyState.currentStepIndex += 1;
@@ -1148,13 +1106,10 @@
 
         surveyState.posttest = {
           confidence: collectScaleValue("confidence", posttestFormEl),
-          difficulty: collectScaleValue("difficulty", posttestFormEl),
-          rhythmDistribution: posttestFormEl.querySelector('input[name="rhythmDistribution"]:checked').value,
-          emotionDistribution: posttestFormEl.querySelector('input[name="emotionDistribution"]:checked').value,
-          focus: collectScaleValue("focus", posttestFormEl),
-          compareEmotion: collectScaleValue("compareEmotion", posttestFormEl),
-          compareEngagement: collectScaleValue("compareEngagement", posttestFormEl),
-          compareFormatBenefit: collectScaleValue("compareFormatBenefit", posttestFormEl)
+          rhythmDiscrimination: collectScaleValue("rhythmDiscrimination", posttestFormEl),
+          emotionDiscrimination: collectScaleValue("emotionDiscrimination", posttestFormEl),
+          spatialPresence360: collectScaleValue("spatialPresence360", posttestFormEl),
+          spatialExplore360: collectScaleValue("spatialExplore360", posttestFormEl)
         };
         surveyState.completedAt = new Date().toISOString();
         surveyState.submission = await submitSurveyData();
